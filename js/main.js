@@ -1,12 +1,11 @@
 const input = document.getElementsByClassName("form-control");
-const addBtn = document.getElementById("add")
-const contCard = document.getElementById("cont-cards");
+const contCard = document.getElementById("cont-cards-fila");
 const form = document.getElementById("vehiculo-form")
 
 function createCard(url, nombreA, marcaA, modeloA, kilometrajeA, precioA) {
 
     const cardPrincipal = document.createElement("div");
-    cardPrincipal.classList.add("item-vehiculo", "col-md-6");
+    cardPrincipal.classList.add("item-vehiculo", "col-md-6", "col-sm-6", "col-lg-6");
 
     const cardSecundaria = document.createElement("div");
     cardSecundaria.classList.add("card", "h-100");
@@ -21,6 +20,7 @@ function createCard(url, nombreA, marcaA, modeloA, kilometrajeA, precioA) {
 
     const nombre = document.createElement("h3");
     nombre.classList.add("card-title");
+    nombre.setAttribute("id", "nombre")
     nombre.textContent = nombreA;
 
     const marca = document.createElement("h4");
@@ -29,25 +29,27 @@ function createCard(url, nombreA, marcaA, modeloA, kilometrajeA, precioA) {
 
     const modelo = document.createElement("h4");
     modelo.classList.add("card-text");
-    modelo.textContent = modeloA;
+    modelo.textContent = "Modelo: " + modeloA;
 
     const kilometraje = document.createElement("h4");
     kilometraje.classList.add("card-text");
-    kilometraje.textContent = kilometrajeA;
+    kilometraje.textContent = "Kilometraje: " + kilometrajeA;
 
     const precio = document.createElement("h2");
     precio.classList.add("text-success");
-    precio.textContent = precioA;
+    precio.textContent = "$" + precioA;
 
     const acciones = document.createElement("div");
     acciones.classList.add("d-flex", "justify-content-between", "mt-3");
 
     const comprar = document.createElement("button");
     comprar.classList.add("btn", "btn-success");
+    comprar.setAttribute("id", "comprar")
     comprar.textContent = "Comprar";
 
     const eliminar = document.createElement("button");
     eliminar.classList.add("btn", "btn-danger");
+    eliminar.setAttribute("id", "eliminar")
     eliminar.textContent = "Eliminar";
 
     //ENSAMBLAMOS DENTRO DEL NODO PADRE SUS NODOS HIJOS, ES DECIR LA ESTRUCTURA DE LA TAREA
@@ -77,14 +79,19 @@ form.addEventListener("submit", (e) => {
 
     e.preventDefault();
 
-    const url = document.getElementById("foto").value.trim();
+    let url = document.getElementById("foto").value.trim();
     const nombreA = document.getElementById("nombre").value.trim();
     const marcaA = document.getElementById("marca").value.trim();
     const modeloA = document.getElementById("modelo").value.trim();
     const kilometrajeA = document.getElementById("kilometraje").value.trim();
     const precioA = document.getElementById("precio").value.trim();
 
-    if (url.value === "" ||
+    // Foto por defecto si el campo viene vacío
+    if (url === "") {
+        url = "img/defecto.heif";
+    }
+
+    if (
     nombreA.value === "" ||
     marcaA.value === "" ||
     modeloA.value === "" ||
@@ -95,10 +102,26 @@ form.addEventListener("submit", (e) => {
     else{
         const newCard = createCard(url, nombreA, marcaA, modeloA, kilometrajeA, precioA);
         contCard.appendChild(newCard);
+        eventsCars(newCard);
         form.reset();
+        
     }
 
 
 
 });
 
+function eventsCars(cardPrincipal) {
+    const btnComprar = cardPrincipal.querySelector("#comprar");
+    const btnDelete = cardPrincipal.querySelector("#eliminar");
+    let nombreV = cardPrincipal.querySelector("#nombre").textContent;
+
+    btnComprar.addEventListener('click', () => {
+        alert("Has comprado el vehiculo " + nombreV + "\nGracias por su compra!!!! ");
+    });
+
+    btnDelete.addEventListener("click", () => {
+        cardPrincipal.remove();
+    });
+
+}
