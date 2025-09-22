@@ -125,3 +125,14 @@ function eventsCars(cardPrincipal) {
     });
 
 }
+
+
+function modalProductos(){
+    let selector = document.getElementById("panel-carrito")
+
+    selector.classList.toggle("active");
+}
+
+document.addEventListener('DOMContentLoaded', function() { 
+document.getElementById('carrito').addEventListener('click', modalProductos);
+});
