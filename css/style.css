@@ -131,7 +131,7 @@ h2 {
     padding: 25px 10px;
     border-radius: 15px;
     top: 80px;
-    right: -500px;
+    right: -1000px;
     align-items: center;
     display: flex;
     /* Flexbox */
@@ -189,7 +189,7 @@ h2 {
 }
 
 /* Botón de eliminar */
-#eliminar {
+#eliminar-carrito {
     width: 40px;
     height: 40px;
     font-weight: bold;
@@ -218,3 +218,10 @@ h2 {
     box-sizing: border-box;
 }
 
+
+
+@media screen and (max-width: 768px) {
+    #panel-carrito{
+        width: 80%;
+    }
+}
