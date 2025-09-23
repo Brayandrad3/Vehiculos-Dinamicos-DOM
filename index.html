@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vehicles - DOM</title>
+    <title>Vehicles - DOM - LocalStorage</title>
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
@@ -26,38 +26,38 @@
                 <form id="vehiculo-form">
                     <!-- Foto (URL) -->
                     <div class="mb-3 ">
-                        <label for="foto" class="form-label">Foto (URL)</label>
-                        <input type="url" id="foto" class="form-control" placeholder="https://ejemplo.com/auto.jpg">
+                        <label for="foto-v" class="form-label">Foto (URL)</label>
+                        <input type="url" id="foto-v" class="form-control" placeholder="https://ejemplo.com/auto.jpg">
                     </div>
 
                     <!-- Nombre -->
                     <div class="mb-3 ">
-                        <label for="nombre" class="form-label">Nombre</label>
-                        <input type="text" id="nombre" class="form-control" placeholder="Ej: Corolla" required>
+                        <label for="nombre-v" class="form-label">Nombre</label>
+                        <input type="text" id="nombre-v" class="form-control" placeholder="Ej: Corolla" required>
                     </div>
 
                     <!-- Marca -->
                     <div class="mb-3 ">
-                        <label for="marca" class="form-label">Marca</label>
-                        <input type="text" id="marca" class="form-control" placeholder="Ej: Toyota" required>
+                        <label for="marca-v" class="form-label">Marca</label>
+                        <input type="text" id="marca-v" class="form-control" placeholder="Ej: Toyota" required>
                     </div>
 
                     <!-- Modelo -->
                     <div class="mb-3 ">
-                        <label for="modelo" class="form-label">Modelo</label>
-                        <input type="text" id="modelo" class="form-control" placeholder="Ej: 2021" required>
+                        <label for="modelo-v" class="form-label">Modelo</label>
+                        <input type="text" id="modelo-v" class="form-control" placeholder="Ej: 2021" required>
                     </div>
 
                     <!-- Kilometraje -->
                     <div class="mb-3 ">
-                        <label for="kilometraje" class="form-label">Kilometraje</label>
-                        <input type="number" id="kilometraje" class="form-control" placeholder="Ej: 35000" required>
+                        <label for="kilometraje-v" class="form-label">Kilometraje</label>
+                        <input type="number" id="kilometraje-v" class="form-control" placeholder="Ej: 35000" required>
                     </div>
 
                     <!-- Precio -->
                     <div class="mb-3 ">
-                        <label for="precio" class="form-label">Precio ($)</label>
-                        <input type="number" id="precio" class="form-control" placeholder="Ej: 50000000" required>
+                        <label for="precio-v" class="form-label">Precio ($)</label>
+                        <input type="number" id="precio-v" class="form-control" placeholder="Ej: 50000000" required>
                     </div>
 
                     <button type="submit" id="add" class="btn btn-primary">Agregar Vehículo</button>
@@ -112,7 +112,12 @@
                 </div>
             </div> -->
         </div>
-        <h2 class="mb-3 total">Total: <span id="total-carrito">$0</span><</h2>
+
+        <div id="total-carrito">
+            <h2 class="mb-3 total">Total: $0</h2>
+            <a href="carrito.html">Ver Carrito</a>
+        </div>
+
     </div>
 
 

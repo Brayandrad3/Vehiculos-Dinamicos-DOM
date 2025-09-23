@@ -7,7 +7,7 @@ h2,
 h3,
 h4,
 h5,
-h6 {
+h6,span  {
     font-family: "Staatliches", sans-serif;
 }
 
@@ -18,8 +18,7 @@ li,
 label,
 input,
 select,
-textarea,
-span {
+textarea{
     font-family: "Sora", sans-serif;
 }
 
@@ -216,6 +215,18 @@ h2 {
     padding-left: 10px;
     /* opcional — ajusta para alinearlo con el contenido */
     box-sizing: border-box;
+}
+
+a {
+    display: inline-block;
+    margin-top: 0;
+    text-decoration: none;
+    color: #fff;
+    background: #003366;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: 0.3s;
 }
 
 

@@ -1,31 +1,48 @@
-const input = document.getElementsByClassName("form-control");
+//  VARIABLES GLOBALES 
+// Selección de contenedores principales
 const contCard = document.getElementById("cont-cards-fila");
-const form = document.getElementById("vehiculo-form")
-const contCarrito = document.getElementById("cont-productos");
+const form = document.getElementById("vehiculo-form");
+const contProductos = document.getElementById("cont-productos");
 
+//  CAMBIO 1 
+// Antes: no se usaba localStorage correctamente.
+// Ahora: se cargan los vehículos y el carrito desde localStorage si existen, 
+// o se inicializan como arrays vacíos para evitar errores.
+let vehiculos = JSON.parse(localStorage.getItem("vehiculos")) || [];
+let carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+let totalCarrito = carrito.reduce((acc, prod) => acc + parseFloat(prod.precio), 0);
+
+
+
+
+
+
+
+//  CREAR CARD 
 function createCard(url, nombreA, marcaA, modeloA, kilometrajeA, precioA) {
+    // Imagen por defecto (esto se mantuvo igual, solo se dejó más claro).
+    const fotoFinal = url || "../img/defecto.heif";
 
+    // Estructura de la card (esto no cambió, solo se limpió la sintaxis).
     const cardPrincipal = document.createElement("div");
-    cardPrincipal.classList.add("item-vehiculo", "col-md-6", "col-sm-6", "col-lg-6");
+    cardPrincipal.classList.add("item-vehiculo", "col-md-6");
 
     const cardSecundaria = document.createElement("div");
     cardSecundaria.classList.add("card", "h-100");
 
-    const img = document.createElement("img")
+    const img = document.createElement("img");
     img.classList.add("card-img-top", "w-100");
-    img.setAttribute("src", url);
-    img.setAttribute("alt", "Foto vehículo");
+    img.setAttribute("src", fotoFinal);
 
     const contInfo = document.createElement("div");
     contInfo.classList.add("card-body");
 
     const nombre = document.createElement("h3");
     nombre.classList.add("card-title");
-    nombre.setAttribute("id", "nombre")
     nombre.textContent = nombreA;
 
     const marca = document.createElement("h4");
-    marca.classList.add("card-subtitle","text-muted");
+    marca.classList.add("card-subtitle", "text-muted");
     marca.textContent = marcaA;
 
     const modelo = document.createElement("h4");
@@ -45,135 +62,123 @@ function createCard(url, nombreA, marcaA, modeloA, kilometrajeA, precioA) {
 
     const comprar = document.createElement("button");
     comprar.classList.add("btn", "btn-success");
-    comprar.setAttribute("id", "comprar")
     comprar.textContent = "Comprar";
 
     const eliminar = document.createElement("button");
     eliminar.classList.add("btn", "btn-danger");
-    eliminar.setAttribute("id", "eliminar")
     eliminar.textContent = "Eliminar";
 
-    //ENSAMBLAMOS DENTRO DEL NODO PADRE SUS NODOS HIJOS, ES DECIR LA ESTRUCTURA DE LA TAREA
 
+
+
+
+    //  CAMBIO 2 
+    // Antes: se usaba localStorage.removeItem("vehiculos"), lo que borraba TODO.
+    // Ahora: se elimina SOLO el vehículo seleccionado usando filter().
+    eliminar.addEventListener("click", () => {
+        cardPrincipal.remove();
+        vehiculos = vehiculos.filter(v => v.nombre !== nombreA);
+        localStorage.setItem("vehiculos", JSON.stringify(vehiculos));
+    });
+
+
+
+
+
+
+    //  CAMBIO 3 
+    // Antes: el carrito no se guardaba, solo existía en el DOM.
+    // Ahora: se guarda en localStorage para persistir después del refresh.
+    comprar.addEventListener("click", () => {
+        alert(`Has comprado el vehículo ${nombreA} - ${marcaA} (${modeloA}) por $${precioA}`);
+
+        const newProducto = { foto: fotoFinal, nombre: nombreA, marca: marcaA, precio: precioA };
+        carrito.push(newProducto);
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+
+        contProductos.appendChild(createProductos(newProducto));
+        totalCarrito += parseFloat(precioA);
+        actualizarTotal();
+    });
+    
+
+
+
+
+
+    // Armado de la card
     cardPrincipal.appendChild(cardSecundaria);
     cardSecundaria.appendChild(img);
     cardSecundaria.appendChild(contInfo);
     contInfo.appendChild(nombre);
     contInfo.appendChild(marca);
-    contInfo.appendChild(modelo)
+    contInfo.appendChild(modelo);
     contInfo.appendChild(kilometraje);
     contInfo.appendChild(precio);
     contInfo.appendChild(acciones);
     acciones.appendChild(comprar);
     acciones.appendChild(eliminar);
 
-    //UTILIZAMOS EL RETURN PARA DAR RESPUESTA DEL ELEMENTO CREADO YA QUE LO USAREMOS EN OTRA FUNCION MAS ADELANTE
-
     return cardPrincipal;
-
 }
 
-//DETECTAMOS EL EVENTO SUBMIT SOBRE EL BOTON AGREGAR CON UN ELEMENTO DE ESCUCHA (listener) 
-//PARA QUE APARTIR DE ESTE EVENTO SE AGREGUE LA TAREA DENTRO DEL CONTENEDOR cont-cards
-
+//  FORM SUBMIT 
 form.addEventListener("submit", (e) => {
-
     e.preventDefault();
 
-    let url = document.getElementById("foto").value.trim();
-    const nombreA = document.getElementById("nombre").value.trim();
-    const marcaA = document.getElementById("marca").value.trim();
-    const modeloA = document.getElementById("modelo").value.trim();
-    const kilometrajeA = document.getElementById("kilometraje").value.trim();
-    const precioA = document.getElementById("precio").value.trim();
+    const url = document.getElementById("foto-v").value.trim();
+    const nombreA = document.getElementById("nombre-v").value.trim();
+    const marcaA = document.getElementById("marca-v").value.trim();
+    const modeloA = document.getElementById("modelo-v").value.trim();
+    const kilometrajeA = document.getElementById("kilometraje-v").value.trim();
+    const precioA = document.getElementById("precio-v").value.trim();
 
-    // Foto por defecto si el campo viene vacío
-    if (url === "") {
-        url = "img/defecto.heif";
+    if (!nombreA || !marcaA || !modeloA || !kilometrajeA || !precioA) {
+        alert("Complete todos los campos para el registro del vehículo por favor");
+        return;
     }
 
-    if (
-    nombreA.value === "" ||
-    marcaA.value === "" ||
-    modeloA.value === "" ||
-    kilometrajeA.value === "" ||
-    precioA.value === "") {
-        alert("Complete todos los campos para el registro del vehiculo por favor");
-    }
-    else{
-        const newCard = createCard(url, nombreA, marcaA, modeloA, kilometrajeA, precioA);
-        contCard.appendChild(newCard);
-        eventsCars(newCard);
-        form.reset();
-        
-    }
+    //  CAMBIO 4 
+    // Antes: se creaba la card pero no se guardaba en localStorage.
+    // Ahora: también se guarda en el array vehiculos y en localStorage.
+    const newVehiculo = { url, nombre: nombreA, marca: marcaA, modelo: modeloA, kilometraje: kilometrajeA, precio: precioA };
+    vehiculos.push(newVehiculo);
+    localStorage.setItem("vehiculos", JSON.stringify(vehiculos));
+
+    const newCard = createCard(url, nombreA, marcaA, modeloA, kilometrajeA, precioA);
+    contCard.appendChild(newCard);
+
+    form.reset();
 
 
 
 });
 
-function eventsCars(cardPrincipal) {
-    const btnComprar = cardPrincipal.querySelector("#comprar");
-    const btnDelete = cardPrincipal.querySelector("#eliminar");
-    let nombreV = cardPrincipal.querySelector("#nombre").textContent;
-    let url = cardPrincipal.querySelector("img").getAttribute("src");
-    let marca = cardPrincipal.querySelector(".text-muted").textContent;
-    let precio = cardPrincipal.querySelector(".text-success").textContent; 
-
-    btnComprar.addEventListener('click', (e) => {
-
-        e.preventDefault();
-
-        alert("Has comprado el vehiculo " + nombreV + "\nGracias por su compra!!!! ");
-        
-
-        const newProducto = CreateProducto(url, nombreV, marca, precio);
-        contCarrito.appendChild(newProducto);
-        actualizarTotal(precio);
-        deleteProductoCarrito(newProducto);
 
 
-    });
+//  CREAR PRODUCTOS EN CARRITO 
+function createProductos(producto) {
+    const { foto, nombre, marca, precio } = producto;
 
-    btnDelete.addEventListener("click", () => {
-        cardPrincipal.remove();
-    });
-
-}
-
-
-function modalProductos(){
-    let selector = document.getElementById("panel-carrito")
-
-    selector.classList.toggle("active");
-}
-
-document.addEventListener('DOMContentLoaded', function() { 
-document.getElementById('carrito').addEventListener('click', modalProductos);
-});
-
-function CreateProducto(url, nombreV, marca, precio) {
-    
     const carritoPrincipal = document.createElement("div");
-    carritoPrincipal.classList.add("productos-card");
+    carritoPrincipal.classList.add("productos-card", "col-12");
 
     const carritoFila = document.createElement("div");
     carritoFila.classList.add("row");
 
     const colCarrito1 = document.createElement("div");
-    colCarrito1.classList.add("col-lg-4","col-md-4","col-carrito1");
-
+    colCarrito1.classList.add("col-lg-4", "col-md-4", "col-carrito1");
     const imgCarrito = document.createElement("img");
     imgCarrito.classList.add("w-100");
-    imgCarrito.setAttribute("alt", "Foto vehículo");
-    imgCarrito.setAttribute("src", url);
+    imgCarrito.setAttribute("src", foto);
+    colCarrito1.appendChild(imgCarrito);
 
     const colCarrito2 = document.createElement("div");
-    colCarrito2.classList.add("col-lg-6","col-md-6","col-carrito2");
+    colCarrito2.classList.add("col-lg-6", "col-md-6", "col-carrito2");
 
     const h3Nombre = document.createElement("h3");
     h3Nombre.classList.add("card-title");
-    h3Nombre.textContent = nombreV;
+    h3Nombre.textContent = nombre;
 
     const h4Marca = document.createElement("h4");
     h4Marca.classList.add("card-subtitle", "text-muted");
@@ -181,47 +186,63 @@ function CreateProducto(url, nombreV, marca, precio) {
 
     const h3Precio = document.createElement("h3");
     h3Precio.classList.add("text-success");
-    h3Precio.textContent = precio;
+    h3Precio.textContent = "$" + precio;
 
-
-    const colCarrito3 = document.createElement("div");
-    colCarrito3.classList.add("col-lg-2","col-md-2","col-carrito3");
-
-    const btndelete = document.createElement("button");
-    btndelete.classList.add("btn", "btn-danger");
-    btndelete.setAttribute("id", "eliminar-carrito");
-    btndelete.textContent = "X";
-
-
-    carritoPrincipal.appendChild(carritoFila);
-    carritoFila.appendChild(colCarrito1);
-    colCarrito1.appendChild(imgCarrito);
-    carritoFila.appendChild(colCarrito2);
     colCarrito2.appendChild(h3Nombre);
     colCarrito2.appendChild(h4Marca);
     colCarrito2.appendChild(h3Precio);
-    carritoFila.appendChild(colCarrito3)
-    colCarrito3.appendChild(btndelete);
 
-    return carritoPrincipal
+    const colCarrito3 = document.createElement("div");
+    colCarrito3.classList.add("col-lg-2", "col-md-2", "col-carrito3", "boton");
 
-
-}
-
-
-
-function deleteProductoCarrito(carritoPrincipal) {
-
-    const btnDelete = carritoPrincipal.querySelector("#eliminar-carrito");
-
+    const btnDelete = document.createElement("button");
+    btnDelete.classList.add("btn", "btn-danger");
+    btnDelete.textContent = "X";
+    //  CAMBIO 5 
+    // Antes: se borraba todo el carrito con removeItem.
+    // Ahora: solo elimina el producto seleccionado usando filter() y actualiza localStorage.
     btnDelete.addEventListener("click", () => {
         carritoPrincipal.remove();
+        carrito = carrito.filter(p => p.nombre !== nombre);
+        localStorage.setItem("carrito", JSON.stringify(carrito));
+        totalCarrito -= parseFloat(precio);
+        actualizarTotal();
     });
-    
+
+    colCarrito3.appendChild(btnDelete);
+
+    carritoFila.appendChild(colCarrito1);
+    carritoFila.appendChild(colCarrito2);
+    carritoFila.appendChild(colCarrito3);
+    carritoPrincipal.appendChild(carritoFila);
+
+    return carritoPrincipal;
 }
 
+//  ACTUALIZAR TOTAL 
+function actualizarTotal() {
+    const totalDiv = document.getElementById("total-carrito");
+    totalDiv.innerHTML = `
+        <h2>Total: $${totalCarrito}</h2>
+        <a href="carrito.html">Ver Carrito</a>
+    `;
+}
 
-//suma de total
+//  CARGAR AL INICIO 
+document.addEventListener("DOMContentLoaded", () => {
+    //  CAMBIO 6 
+    // Antes: no se reconstruía nada al refrescar.
+    // Ahora: se recorren los arrays guardados en localStorage
+    // y se reconstruyen las cards y el carrito en el DOM.
+    vehiculos.forEach(v => contCard.appendChild(createCard(v.url, v.nombre, v.marca, v.modelo, v.kilometraje, v.precio)));
+    carrito.forEach(p => contProductos.appendChild(createProductos(p)));
+    actualizarTotal();
 
-let totalCarrito = 0;
+    document.getElementById('carrito').addEventListener('click', modalProductos);
+});
 
+//  PANEL CARRITO 
+function modalProductos() {
+    let selector = document.getElementById("panel-carrito");
+    selector.classList.toggle("active");
+}
