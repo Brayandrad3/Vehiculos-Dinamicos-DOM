@@ -20,10 +20,10 @@ let totalCarrito = carrito.reduce((acc, prod) => acc + parseFloat(prod.precio), 
 
 //  CREAR CARD 
 function createCard(url, nombreA, marcaA, modeloA, kilometrajeA, precioA) {
-    // Imagen por defecto (esto se mantuvo igual, solo se dejó más claro).
-    const fotoFinal = url || "../img/defecto.heif";
+    // Imagen por defecto 
+    const fotoFinal = url || "./img/defecto.jpg";
 
-    // Estructura de la card (esto no cambió, solo se limpió la sintaxis).
+    // Estructura de la card 
     const cardPrincipal = document.createElement("div");
     cardPrincipal.classList.add("item-vehiculo", "col-md-6");
 
