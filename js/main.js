@@ -90,7 +90,7 @@ function createCard(url, nombreA, marcaA, modeloA, kilometrajeA, precioA) {
     // Antes: el carrito no se guardaba, solo existía en el DOM.
     // Ahora: se guarda en localStorage para persistir después del refresh.
     comprar.addEventListener("click", () => {
-        alert(`Has comprado el vehículo ${nombreA} - ${marcaA} (${modeloA}) por $${precioA}`);
+        alert("Has comprado el vehiculo " + nombreA + "\nGracias por su compra!!!! ");
 
         const newProducto = { foto: fotoFinal, nombre: nombreA, marca: marcaA, precio: precioA };
         carrito.push(newProducto);
